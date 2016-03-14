@@ -1,0 +1,23 @@
+{
+  "name": "my-test",
+  "version": "1.0.0",
+  "description": "This is a test module.",
+  "main": "No",
+  "dependencies": {
+    "express": "^4.13.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "No",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "No"
+  },
+  "keywords": [
+    "test"
+  ],
+  "author": "nanzhangren",
+  "license": "UNLICENSED"
+}
