@@ -1,6 +1,7 @@
 var fs = require('fs');
 var data = '';
 
+// This ia a comment.
 var readStream = fs.createReadStream('input.txt');
 
 readStream.setEncoding('UTF8');

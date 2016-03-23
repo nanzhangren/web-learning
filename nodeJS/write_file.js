@@ -1,6 +1,7 @@
 var fs = require('fs');
 var data = 'Here you are. It is a nice place.';
 
+// This is a comment.
 var writeStream = fs.createWriteStream('input.txt');
 
 writeStream.write(data, 'UTF8');
