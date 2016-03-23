@@ -4,7 +4,10 @@
   "description": "This is a test module.",
   "main": "No",
   "dependencies": {
-    "express": "^4.13.4"
+    "body-parser": "^1.15.0",
+    "cookie-parser": "^1.4.1",
+    "express": "^4.13.4",
+    "multer": "^1.1.0"
   },
   "devDependencies": {},
   "scripts": {
