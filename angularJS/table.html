@@ -1,0 +1,45 @@
+<html>
+<meta charset='utf-8'>
+<head>
+    <title>AngularJS Select</title>
+    <script src='angular.js'></script>
+    <style>
+        table, tr, td {
+            border: 1px solid grey;
+            border-collapse: collapse;
+            padding: 5px;
+        }
+        table tr:nth-child(odd) {
+            background-color: #f1f1f1;
+        }
+        table tr:nth-child(even) {
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <div ng-app='myApp' ng-controller='myCtrl'>
+        <table>
+            <tr ng-repeat="x in names | orderBy: 'Country'">
+                <td>{{ $index + 1 }}</td>
+                <td>{{ x.Name }}</td>
+                <td>{{ x.Country }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <script>
+        var app = angular.module('myApp', []);
+        app.controller('myCtrl', function($scope) {
+            $scope.names = [
+                {Name: 'Tom', Country: 'France'},
+                {Name: 'Bob', Country: 'Germany'},
+                {Name: 'Nacy', Country: 'Spain'},
+                {Name: 'Johnson', Country: 'American'},
+                {Name: 'Li Chen', Country: 'China'}
+            ];
+        });
+    </script>
+</body>
+</html>
+
