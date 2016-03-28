@@ -1,0 +1,20 @@
+<html>
+<meta charset='utf-8'>
+<head>
+<title>AngularJS Select</title>
+<script src='angular.js'></script>
+</head>
+<body>
+    <div ng-app='myApp' ng-controller='myCtrl'>
+        <select ng-model='selectedName' ng-options='x for x in names'>
+        </select>
+    </div>
+
+    <script>
+        var app = angular.module('myApp', []);
+        app.controller('myCtrl', function($scope) {
+            $scope.names = ['Google', 'Runoob', 'Taobao'];
+        });
+    </script>
+</body>
+</html>
