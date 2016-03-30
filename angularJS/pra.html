@@ -1,0 +1,25 @@
+<html>
+<head>
+<meta charset="utf-8">
+<title>Angular Test Page</title>
+<script src="angular.js"></script>
+</head>
+<body>
+    <div ng-app="myApp" ng-controller="myCtrl">
+        First name: <input type="text" ng-model="firstName" /><br/>
+        Last name: <input type="text" ng-model="lastName" /><br/>
+        <br/>
+        Full name: {{fullName()}}
+    </div>
+    <script type="text/javascript">
+        var app = angular.module('myApp', []);
+        app.controller('myCtrl', function($scope) {
+            $scope.firstName = 'Zero';
+            $scope.lastName = 'Zhang';
+            $scope.fullName = function() {
+                return $scope.firstName + " " + $scope.lastName;
+            }
+       });
+    </script>
+</body>
+</html>
