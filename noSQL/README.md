@@ -1,3 +1,7 @@
+NoSQL learning page:
+
+NoSQL数据库: http://www.oschina.net/project/tag/235/nosql
+
 NoSQL learning:
 1. ACID: 数据库事务正确执行的四个基本要素 ———— 原子性(Atomicity)、一致性(Consistency)、隔离性(Isolation)、持久性(Durability)。
 2. NoSQL常被解释为"non-relational"或"Not Only SQL"。
