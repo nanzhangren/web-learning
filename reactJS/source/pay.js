@@ -9,7 +9,7 @@ var TextShown = MainPage.TextShown;
 var MySelect = React.createClass({
     getInitialState: function () {
         return {
-            costsItems: ["Water Costs", "Electricity Costs", "Other Costs"]
+            costsItems: ["水费", "电费", "其他"]
         };
     },
     render: function () {
@@ -19,13 +19,34 @@ var MySelect = React.createClass({
             );
         });
         return (
-            <select>
-                {costsList}
-            </select>
+            <div>
+                <select style={{ width: this.props.selectWidth, height: this.props.selectHeight }}>
+                    {costsList}
+                </select>
+            </div>
         );
     }
 });
 
+var MyTextInput = React.createClass({
+    render: function () {
+        return (
+            <div>
+                <input type="text" placeholder={this.props.inputHintText} style={{ width: this.props.inputWidth, height: this.props.inputHeight}} />
+            </div>
+        );
+    }
+});
+
+var MyNumberInput = React.createClass({
+    render: function () {
+        return (
+            <div>
+                <input type="number" min="0" placeholder={this.props.inputHintText} style={{ width: this.props.inputWidth, height: this.props.inputHeight}} />
+            </div>
+        );
+    }
+});
 var PayPageContent = React.createClass({
     componentDidMount: function () {
         ReactDOM.render(
@@ -34,11 +55,19 @@ var PayPageContent = React.createClass({
         );
     },
     render: function () {
+        var payElementWidth = 260, payElementHeight = 30;
+        var btnWidth = 120;
         return (
             <div>
                 <TextShown textContent="xxx System" textSize="x-large" textMargin="60px" />
-                <div style={{ marginTop: "180px" }}>
-                    <MySelect />
+                <div id="payItems" style={{ textAlign: "center", marginTop: "130px", width: "80%", marginLeft: "10%", marginRight: "10%" }}>
+                    <MySelect selectWidth={payElementWidth + 4} selectHeight={payElementHeight + 6} />
+                    <MyNumberInput inputWidth={payElementWidth} inputHeight={payElementHeight} inputHintText="请输入房号" />
+                    <MyTextInput inputWidth={payElementWidth} inputHeight={payElementHeight} inputHintText="请输入户主姓名" />
+                    <MyNumberInput inputWidth={payElementWidth} inputHeight={payElementHeight} inputHintText="请输入金额" />
+                    <div style={{ marginTop: "60px" }}>
+                        <input type="button" value="确认" style={{ width: btnWidth, height: "30px", marginLeft: payElementWidth + 4 - btnWidth }} />
+                    </div>
                 </div>
             </div>
         );

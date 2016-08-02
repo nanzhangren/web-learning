@@ -44,9 +44,9 @@ var ButtonRow = React.createClass({
         var btnSize = 160;
         return (
             <div style={divStyle}>
-                <ChoiceButton btnSize={btnSize} btnColor="blue" btnValue="Pay" clickEvent={this.switchToPay} />
-                <ChoiceButton btnSize={btnSize} btnColor="red" btnValue="Inquire" clickEvent={this.switchToInquire} />
-                <ChoiceButton btnSize={btnSize} btnColor="green" btnValue="Other" />
+                <ChoiceButton btnSize={btnSize} btnColor="blue" btnValue="缴费" clickEvent={this.switchToPay} />
+                <ChoiceButton btnSize={btnSize} btnColor="red" btnValue="查询" clickEvent={this.switchToInquire} />
+                <ChoiceButton btnSize={btnSize} btnColor="green" btnValue="其他" />
             </div>
         );
     }
