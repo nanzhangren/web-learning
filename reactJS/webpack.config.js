@@ -1,9 +1,17 @@
 var config = {
-    entry: './source/main.js',
+    entry: {
+        main: ['./source/main.js'],
+        pay: './source/pay.js',
+        inquire: './source/inquire.js'
+    },
+
+    externals: {
+        main: true
+    },
 
     output: {
         path:'./output/',
-        filename: 'index.js',
+        filename: '[name].output.js'
     },
 
     devServer: {

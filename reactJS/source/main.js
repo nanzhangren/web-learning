@@ -6,7 +6,7 @@ var ChoiceButton = React.createClass({
         var divStyle = {
             width: this.props.btnSize,
             height: this.props.btnSize,
-            margin: 8,
+            margin: "8px 20px",
             display: "inline-block"
         };
 
@@ -22,13 +22,19 @@ var ChoiceButton = React.createClass({
 
         return (
             <div style={divStyle}>
-                <input type="button" value={this.props.btnValue} style={btnStyle} />
+                <input type="button" value={this.props.btnValue} style={btnStyle} onClick={this.props.clickEvent} />
             </div>
         );
     }
 });
 
 var ButtonRow = React.createClass({
+    switchToPay: function () {
+        window.location.href = "./html/pay.html";
+    },
+    switchToInquire: function () {
+        window.location.href = "./html/inquire.html";
+    },
     render: function () {
         var divStyle = {
             textAlign: "center",
@@ -38,9 +44,9 @@ var ButtonRow = React.createClass({
         var btnSize = 160;
         return (
             <div style={divStyle}>
-                <ChoiceButton btnSize={btnSize} btnColor="blue" btnValue="缴费" />
-                <ChoiceButton btnSize={btnSize} btnColor="red" btnValue="查询" />
-                <ChoiceButton btnSize={btnSize} btnColor="green" btnValue="社区活动" />
+                <ChoiceButton btnSize={btnSize} btnColor="blue" btnValue="Pay" clickEvent={this.switchToPay} />
+                <ChoiceButton btnSize={btnSize} btnColor="red" btnValue="Inquire" clickEvent={this.switchToInquire} />
+                <ChoiceButton btnSize={btnSize} btnColor="green" btnValue="Other" />
             </div>
         );
     }
@@ -56,24 +62,53 @@ var TextShown = React.createClass({
     }
 });
 
-var App = React.createClass({
+var MainPageContent = React.createClass({
+    render: function () {
+        return (
+            <div>
+                <TextShown textContent="xxx System" textSize="x-large" textMargin="60px" />
+                <div style={{ marginTop: "180px" }}>
+                    <ButtonRow />
+                </div>
+            </div>
+        );
+    }
+});
+
+var PageFrame = React.createClass({
     render: function () {
         return (
             <div style={{height: this.props.appHeight}}>
-                <div className="frame-div" style={{ width: "20%", backgroundColor: "red" }}></div>
-                <div className="frame-div" style={{ width: "60%", backgroundColor: "yellowgreen" }}>
-                    <TextShown textContent="xxx小区管理系统" textSize="x-larger" textMargin="18px" />
-                    <div style={{ marginTop: "180px" }}>
-                        <ButtonRow />
-                    </div>
-                </div>
-                <div className="frame-div" style={{ width: "20%", backgroundColor: "lightblue" }}></div>
+                <div className="frame-div" style={{ width: "20%" }}></div>
+                <div className="frame-div" style={{ width: "60%" }} id="centerDiv"></div>
+                <div className="frame-div" style={{ width: "20%" }}></div>
+            </div>
+        );
+    }
+});
+
+var App = React.createClass({
+    componentDidMount: function () {
+        ReactDOM.render(
+            <MainPageContent />,
+            document.getElementById("centerDiv")
+        );
+    },
+    render: function () {
+        return (
+            <div>
+                <PageFrame appHeight="800px" />
             </div>
         );
     }
 });
 
 ReactDOM.render(
-    <App appHeight="800px" />,
+    <App />,
     document.getElementById("sample")
 );
+
+module.exports = {
+    PageFrame: PageFrame,
+    TextShown: TextShown
+}
