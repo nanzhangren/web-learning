@@ -2,3 +2,7 @@
     height: 100%;
     float: left;
 }
+
+#payItems > div {
+    margin: 10px 0;
+}
