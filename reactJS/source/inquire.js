@@ -197,10 +197,9 @@ var MyInquireDiv = React.createClass({
     render: function () {
         var divStyle = {
             position: "absolute",
-            top: "260px",
+            top: "25%",
             left: 0,
             width: "100%",
-            height: "100%",
             textAlign: "center"
         };
         var inquireElementWidth = 260, inquireElementHeight = 30;
