@@ -6,3 +6,11 @@
 #payItems > div {
     margin: 10px 0;
 }
+
+#dataTable tr {
+    height: 35px;
+}
+
+#inquireItems > div {
+    margin: 10px 0;
+}

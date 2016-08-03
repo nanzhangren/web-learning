@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 
 var MainPage = require("./main.js");
 var PageFrame = MainPage.PageFrame;
-var TextShown = MainPage.TextShown;
+var DivText = MainPage.DivText;
 
 
 var MySelect = React.createClass({
@@ -47,19 +47,14 @@ var MyNumberInput = React.createClass({
         );
     }
 });
+
 var PayPageContent = React.createClass({
-    componentDidMount: function () {
-        ReactDOM.render(
-            <PayPageContent />,
-            document.getElementById("centerDiv")
-        );
-    },
     render: function () {
         var payElementWidth = 260, payElementHeight = 30;
         var btnWidth = 120;
         return (
             <div>
-                <TextShown textContent="xxx System" textSize="x-large" textMargin="60px" />
+                <DivText textContent="xxx System" textSize="x-large" textMargin="60px" />
                 <div id="payItems" style={{ textAlign: "center", marginTop: "130px", width: "80%", marginLeft: "10%", marginRight: "10%" }}>
                     <MySelect selectWidth={payElementWidth + 4} selectHeight={payElementHeight + 6} />
                     <MyNumberInput inputWidth={payElementWidth} inputHeight={payElementHeight} inputHintText="请输入房号" />
@@ -94,3 +89,7 @@ ReactDOM.render(
     <App />,
     document.getElementById("sample")
 );
+
+module.exports = {
+    MyNumberInput: MyNumberInput
+};

@@ -1,7 +1,7 @@
 var config = {
     entry: {
         main: ['./source/main.js'],
-        pay: './source/pay.js',
+        pay: ['./source/pay.js'],
         inquire: './source/inquire.js'
     },
 

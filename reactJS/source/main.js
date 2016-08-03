@@ -52,11 +52,19 @@ var ButtonRow = React.createClass({
     }
 });
 
-var TextShown = React.createClass({
+var MyText = React.createClass({
+    render: function () {
+        return (
+            <span style={{ fontSize: this.props.textSize, fontWeight: this.props.textWeight }}>{this.props.textContent}</span>
+        );
+    }
+});
+
+var DivText = React.createClass({
     render: function () {
         return (
             <div style={{ textAlign: "center", margin: this.props.textMargin }}>
-                <span style={{ fontSize: this.props.textSize, fontWeight: "bold" }}>{this.props.textContent}</span>
+                <MyText textWeight="bold" textContent={this.props.textContent} textSize={this.props.textSize} textMargin={this.props.textMargin} />
             </div>
         );
     }
@@ -66,9 +74,9 @@ var MainPageContent = React.createClass({
     render: function () {
         return (
             <div>
-                <TextShown textContent="xxx System" textSize="x-large" textMargin="60px" />
+                <DivText textContent="xxx System" textSize="x-large" textMargin="60px" />
                 <div style={{ marginTop: "180px" }}>
-                    <ButtonRow />
+                    <ButtonRow ref="myButton" />
                 </div>
             </div>
         );
@@ -79,9 +87,9 @@ var PageFrame = React.createClass({
     render: function () {
         return (
             <div style={{height: this.props.appHeight}}>
-                <div className="frame-div" style={{ width: "20%" }}></div>
+                <div className="frame-div" style={{ width: "20%" }} id="leftDiv"></div>
                 <div className="frame-div" style={{ width: "60%" }} id="centerDiv"></div>
-                <div className="frame-div" style={{ width: "20%" }}></div>
+                <div className="frame-div" style={{ width: "20%" }} id="rightDiv"></div>
             </div>
         );
     }
@@ -110,5 +118,6 @@ ReactDOM.render(
 
 module.exports = {
     PageFrame: PageFrame,
-    TextShown: TextShown
+    DivText: DivText,
+    MyText: MyText
 }
