@@ -13,14 +13,21 @@ var MyNumberInput = PayPage.MyNumberInput;
 var InquireLeftPageContent = React.createClass({
     getInitialState: function () {
         return {
-            costsItems: ["水费", "电费", "其他"]
+            costsItems: ["水费", "电费", "其他"],
+            showInquireDiv: false
         };
     },
+    changeInquireDivState: function () {
+        this.setState({
+            showInquireDiv: true
+        });
+    },
     render: function () {
+        var self = this;
         var colorList = ["green", "blue", "red"];
-        var costsList = this.state.costsItems.map(function (item, index) {
+        var costsList = self.state.costsItems.map(function (item, index) {
             return (
-                <li key={item} style={{
+                <li onClick={self.changeInquireDivState.bind(self)} key={item} style={{
                     display: "block",
                     height: "45px",
                     lineHeight: "2em",
@@ -32,9 +39,12 @@ var InquireLeftPageContent = React.createClass({
             );
         });
         return (
-            <ul style={{ marginTop: "200px" }}>
-                {costsList}
-            </ul>
+            <div>
+                <MyInquireDiv initialDivState={self.state.showInquireDiv} />
+                <ul id="costsListUl" style={{ marginTop: "200px" }}>
+                    {costsList}
+                </ul>
+            </div>
         );
     }
 });
@@ -194,24 +204,52 @@ var MyDateInput = React.createClass({
 });
 
 var MyInquireDiv = React.createClass({
+    getInitialState: function () {
+        return {
+            showInquireDiv: false
+        };
+    },
+    componentWillReceiveProps: function () {
+        this.setState({
+            showInquireDiv: this.props.initialDivState
+        });
+    },
+    hideInquireDiv: function () {
+        this.setState({
+            showInquireDiv: false
+        });
+    },
     render: function () {
-        var divStyle = {
+        var showInquireDiv = this.state.showInquireDiv ? "block" : "none";
+        var innerDivStyle = {
             position: "absolute",
             top: "25%",
             left: 0,
             width: "100%",
-            textAlign: "center"
+            textAlign: "center",
+            backgroundColor: "transparent"
         };
-        var inquireElementWidth = 260, inquireElementHeight = 30;
+        var outerDivStyle = {
+            width: "100%",
+            height: "100%",
+            position: "absolute",
+            top: 0,
+            left: 0,
+            backgroundColor: "rgba(158, 158, 158, 0.8)",
+            display: showInquireDiv
+        };
+        var inquireElementWidth = 280, inquireElementHeight = 30;
         var btnWidth = 120;
 
         return (
-            <div id="inquireItems" style={divStyle}>
-                <MyNumberInput inputWidth={inquireElementWidth} inputHeight={inquireElementHeight} inputHintText="请输入房号" />
-                <MyDateInput inputWidth={inquireElementWidth} inputHeight={inquireElementHeight} inputHintText="请输入开始日期" />
-                <MyDateInput inputWidth={inquireElementWidth} inputHeight={inquireElementHeight} inputHintText="请输入结束日期" />
-                <div style={{ marginTop: "60px" }}>
-                    <input type="button" value="确认" style={{ width: btnWidth, height: "30px", marginLeft: inquireElementWidth + 4 - btnWidth }} />
+            <div style={outerDivStyle}>
+                <div id="inquireItems" style={innerDivStyle}>
+                    <MyNumberInput inputWidth={inquireElementWidth} inputHeight={inquireElementHeight} inputHintText="请输入房号" />
+                    <MyDateInput inputWidth={inquireElementWidth} inputHeight={inquireElementHeight} inputHintText="请输入开始日期" />
+                    <MyDateInput inputWidth={inquireElementWidth} inputHeight={inquireElementHeight} inputHintText="请输入结束日期" />
+                    <div style={{ marginTop: "60px" }}>
+                        <input type="button" value="确认" onClick={this.hideInquireDiv} style={{ width: btnWidth, height: "30px", marginLeft: inquireElementWidth + 4 - btnWidth }} />
+                    </div>
                 </div>
             </div>
         );
@@ -219,6 +257,6 @@ var MyInquireDiv = React.createClass({
 });
 
 ReactDOM.render(
-    <MyInquireDiv />,
+    <App />,
     document.getElementById("sample")
 );
