@@ -2,7 +2,8 @@ var config = {
     entry: {
         index: ['./source/index.js'],
         pay: ['./source/pay.js'],
-        inquire: './source/inquire.js'
+        inquire: './source/inquire.js',
+        connectSQL: './source/connectSQL.js'
     },
 
     externals: {
