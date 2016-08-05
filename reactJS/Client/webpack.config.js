@@ -3,7 +3,7 @@ var config = {
         index: ['./source/index.js'],
         pay: ['./source/pay.js'],
         inquire: './source/inquire.js',
-        connectSQL: './source/connectSQL.js'
+        data: ['./source/data.js']
     },
 
     externals: {

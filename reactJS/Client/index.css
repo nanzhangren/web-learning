@@ -16,5 +16,11 @@
 }
 
 #costsListUl li:hover {
-   background-color: rgba(183, 226, 71, 0.35);
+    background-color: rgba(183, 226, 71, 0.35);
+    color: #ffffff !important;
+}
+
+#costsListUl li.selected {
+    background-color: rgba(183, 226, 71, 0.35);
+    color: #ffffff !important;
 }

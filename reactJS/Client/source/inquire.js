@@ -9,6 +9,7 @@ var MyText = MainPage.MyText;
 var PayPage = require("./pay.js");
 var MyNumberInput = PayPage.MyNumberInput;
 
+var UserCostsData = require("./data.js");
 
 var InquireLeftPageContent = React.createClass({
     getInitialState: function () {
@@ -21,14 +22,19 @@ var InquireLeftPageContent = React.createClass({
         this.setState({
             showInquireDiv: true
         });
+
+        this.refs.costsListUl.children.map(function (item) {
+            var stat = 12;
+        });
     },
     render: function () {
         var self = this;
         var colorList = ["green", "blue", "red"];
         var costsList = self.state.costsItems.map(function (item, index) {
             return (
-                <li onClick={self.changeInquireDivState} key={item} style={{
+                <li className={index === 0 ? "selected" : ""} onClick={self.changeInquireDivState} key={item} style={{
                     display: "block",
+                    margin: "3px 0",
                     height: "45px",
                     lineHeight: "2em",
                     fontSize: "larger",
@@ -41,7 +47,7 @@ var InquireLeftPageContent = React.createClass({
         return (
             <div>
                 <MyInquireDiv initialDivState={self.state.showInquireDiv} />
-                <ul id="costsListUl" style={{ marginTop: "200px" }}>
+                <ul ref="costsListUl" id="costsListUl" style={{ marginTop: "239px" }}>
                     {costsList}
                 </ul>
             </div>
@@ -108,14 +114,7 @@ var MyTr = React.createClass({
 var MyTbody = React.createClass({
     getInitialState: function () {
         return {
-            userData: [
-                ["2016/03/09", 123, 120, "/"],
-                ["2016/03/10", 125, 12, "/"],
-                ["2016/03/11", 121, 125, 100],
-                ["2016/03/12", 654, 112, 200],
-                ["2016/03/13", 554, 455, "/"],
-                ["2016/03/14", 312, 458, 10]
-            ]
+            userData: []
         };
     },
     render: function () {
