@@ -1,6 +1,6 @@
 var config = {
     entry: {
-        main: ['./source/main.js'],
+        index: ['./source/index.js'],
         pay: ['./source/pay.js'],
         inquire: './source/inquire.js'
     },

@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-var MainPage = require("./main.js");
+var MainPage = require("./index.js");
 var PageFrame = MainPage.PageFrame;
 var DivText = MainPage.DivText;
 var MyText = MainPage.MyText;
