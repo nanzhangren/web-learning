@@ -27,7 +27,7 @@ var InquireLeftPageContent = React.createClass({
         var colorList = ["green", "blue", "red"];
         var costsList = self.state.costsItems.map(function (item, index) {
             return (
-                <li onClick={self.changeInquireDivState.bind(self)} key={item} style={{
+                <li onClick={self.changeInquireDivState} key={item} style={{
                     display: "block",
                     height: "45px",
                     lineHeight: "2em",
@@ -209,9 +209,9 @@ var MyInquireDiv = React.createClass({
             showInquireDiv: false
         };
     },
-    componentWillReceiveProps: function () {
+    componentWillReceiveProps: function (newProps) {
         this.setState({
-            showInquireDiv: this.props.initialDivState
+            showInquireDiv: newProps.initialDivState
         });
     },
     hideInquireDiv: function () {
