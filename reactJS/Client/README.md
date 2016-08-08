@@ -8,6 +8,8 @@ npm install webpack
 npm install webpack-dev-server
 npm install react
 npm install react-dom
+npm install react-redux
+npm install redux
 npm install babel-core
 npm install babel-loader
 npm install babel-preset-react

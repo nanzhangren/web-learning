@@ -18,9 +18,9 @@ var InquireLeftPageContent = React.createClass({
             showDeleteButton: false
         };
     },
-    changeInquireDivState: function () {
+    changeInquireDivState: function (newState) {
         this.setState({
-            showInquireDiv: true
+            showInquireDiv: newState !== undefined ? newState : true
         });
     },
     changeDeleteButtonState: function () {
@@ -56,7 +56,7 @@ var InquireLeftPageContent = React.createClass({
         });
         return (
             <div>
-                <MyInquireDiv initialDivState={self.state.showInquireDiv} />
+                <MyInquireDiv initialDivState={self.state.showInquireDiv} changeInquireDivStateCallback={this.changeInquireDivState} updateUserDataCallback={this.props.updateUserDataCallback} />
                 <ul ref="costsListUl" id="costsListUl" style={{ marginTop: "239px" }}>
                     {costsList}
                 </ul>
@@ -81,6 +81,11 @@ var MyTd = React.createClass({
             canEditText: false,
             tdData: this.props.tdData
         };
+    },
+    componentWillReceiveProps: function (newProps) {
+        this.setState({
+            tdData: newProps.tdData
+        });
     },
     saveText: function (event) {
         if(event.keyCode === 108 || event.keyCode === 13) {
@@ -114,6 +119,7 @@ var MyTr = React.createClass({
     },
     componentWillReceiveProps: function (newProps) {
         this.setState({
+            trData: newProps.userTrData,
             showDeleteButton: newProps.deleteButtonState
         });
     },
@@ -143,28 +149,15 @@ var MyTr = React.createClass({
 });
 
 var MyTbody = React.createClass({
-    sortData: function (data) {
-        for(let i = 0; i < data.length; i++) {
-            for(let j = i + 1; j < data.length; j++) {
-                if(data[i][0] < data[j][0]) {
-                    let temp = data[j];
-                    data[j] = data[i];
-                    data[i] = temp;
-                }
-            }
-        }
-        return data.map(function(item) {
-            return {
-                data: item,
-                show: true
-            }
-        });
-    },
     getInitialState: function () {
-        var initData = this.sortData(UserCostsData.waterCostsData);
         return {
-            userData: initData
+            userData: this.props.userData
         };
+    },
+    componentWillReceiveProps: function (newProps) {
+        this.setState({
+            userData: newProps.userData
+        });
     },
     updateUserData: function (trData, trIndex) {
         this.state.userData[trIndex] = trData;
@@ -190,6 +183,16 @@ var MyTbody = React.createClass({
 });
 
 var InquireInfoContent = React.createClass({
+    getInitialState: function () {
+        return {
+            userData: this.props.userData
+        };
+    },
+    componentWillReceiveProps: function (newProps) {
+        this.setState({
+            userData: newProps.userData
+        });
+    },
     render: function () {
         var tableStyle = {
             width: "100%",
@@ -207,28 +210,68 @@ var InquireInfoContent = React.createClass({
                         <MyTextTd tdContent="缴费金额（元）" />
                     </tr>
                 </thead>
-                <MyTbody deleteButtonState={this.props.deleteButtonState} />
+                <MyTbody deleteButtonState={this.props.deleteButtonState} userData={this.state.userData} />
             </table>
         );
     }
 });
 
 var InquireCenterPageContent = React.createClass({
+    getInitialState: function () {
+        return {
+            userData: this.props.userData
+        };
+    },
+    componentWillReceiveProps: function (newProps) {
+        this.setState({
+            userData: newProps.userData
+        });
+    },
     render: function () {
         return (
             <div>
                 <DivText textContent="xxx 系统" textSize="x-large" textMargin="60px" />
-                <InquireInfoContent deleteButtonState={this.props.deleteButtonState} />
+                <InquireInfoContent deleteButtonState={this.props.deleteButtonState} userData={this.state.userData} />
             </div>
         );
     }
 });
 
 var App = React.createClass({
+    sortData: function (data) {
+        for(let i = 0; i < data.length; i++) {
+            for(let j = i + 1; j < data.length; j++) {
+                if(data[i][0] < data[j][0]) {
+                    let temp = data[j];
+                    data[j] = data[i];
+                    data[i] = temp;
+                }
+            }
+        }
+        return data.map(function(item) {
+            return {
+                data: item,
+                show: true
+            }
+        });
+    },
     getInitialState: function () {
+        var initData = this.sortData(UserCostsData.waterCostsData);
         return {
-            showDeleteButton: false
+            showDeleteButton: false,
+            userData: initData
         };
+    },
+    updataUserData: function (newItem) {
+        var lastItem = this.state.userData[this.state.userData.length - 1];
+        var money = parseInt(newItem.money);
+        var newUserDataItem = [newItem.date, lastItem.data[1] + money * 0.38, lastItem.data[2], money];
+
+        this.state.userData.unshift({data: newUserDataItem, show: true});
+
+        this.setState({
+            userData: this.state.userData
+        });
     },
     changeDeleteButtonState: function (newState) {
         this.setState({
@@ -242,10 +285,10 @@ var App = React.createClass({
             <div>
                 <div style={{height: "800px"}}>
                     <div className="frame-div" style={{ width: "20%" }}>
-                        <InquireLeftPageContent operatorItems={operatorItems} deleteButtonCallback={this.changeDeleteButtonState} />
+                        <InquireLeftPageContent operatorItems={operatorItems} deleteButtonCallback={this.changeDeleteButtonState} updateUserDataCallback={this.updataUserData} />
                     </div>
                     <div className="frame-div" style={{ width: "60%" }}>
-                        <InquireCenterPageContent deleteButtonState={this.state.showDeleteButton} />
+                        <InquireCenterPageContent deleteButtonState={this.state.showDeleteButton} userData={this.state.userData} />
                     </div>
                     <div className="frame-div" style={{ width: "20%" }}></div>
                 </div>
@@ -290,6 +333,12 @@ var MyInquireDiv = React.createClass({
         this.setState({
             showInquireDiv: false
         });
+        this.props.changeInquireDivStateCallback(false);
+
+        var dateInputElement = ReactDOM.findDOMNode(this.refs.dateInput).children[0];
+        var numberInputElement = ReactDOM.findDOMNode(this.refs.numberInput).children[0];
+        var dataItem = {date: dateInputElement.value, money: numberInputElement.value};
+        this.props.updateUserDataCallback(dataItem);
     },
     formatNumber: function (num) {
         if(num > 0 && num < 10) {
@@ -301,7 +350,7 @@ var MyInquireDiv = React.createClass({
     },
     getCurrentDate: function () {
         var date = new Date();
-        return date.getFullYear() + "/" + this.formatNumber(date.getMonth()) + "/" + this.formatNumber(date.getDate());
+        return date.getFullYear() + "/" + this.formatNumber(date.getMonth() + 1) + "/" + this.formatNumber(date.getDate());
     },
     render: function () {
         var showInquireDiv = this.state.showInquireDiv ? "block" : "none";
@@ -328,8 +377,8 @@ var MyInquireDiv = React.createClass({
         return (
             <div style={outerDivStyle}>
                 <div id="inquireItems" style={innerDivStyle}>
-                    <MyDateText inputWidth={inquireElementWidth} inputHeight={inquireElementHeight} textValue={this.getCurrentDate()} />
-                    <MyNumberInput inputWidth={inquireElementWidth} inputHeight={inquireElementHeight} inputHintText="请输入金额" />
+                    <MyDateText ref="dateInput" inputWidth={inquireElementWidth} inputHeight={inquireElementHeight} textValue={this.getCurrentDate()} />
+                    <MyNumberInput ref="numberInput" inputWidth={inquireElementWidth} inputHeight={inquireElementHeight} inputHintText="请输入金额" />
                     <div style={{ marginTop: "60px" }}>
                         <input type="button" value="确认" onClick={this.hideInquireDiv} style={{ width: btnWidth, height: "30px", marginLeft: inquireElementWidth + 4 - btnWidth }} />
                     </div>
