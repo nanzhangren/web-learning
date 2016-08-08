@@ -14,34 +14,44 @@ var UserCostsData = require("./data.js");
 var InquireLeftPageContent = React.createClass({
     getInitialState: function () {
         return {
-            costsItems: ["水费", "电费", "其他"],
-            showInquireDiv: false
+            showInquireDiv: false,
+            showDeleteButton: false
         };
     },
     changeInquireDivState: function () {
         this.setState({
             showInquireDiv: true
         });
-
-        this.refs.costsListUl.children.map(function (item) {
-            var stat = 12;
+    },
+    changeDeleteButtonState: function () {
+        var newState = true;
+        this.setState({
+            showDeleteButton: newState
         });
+        this.props.deleteButtonCallback(newState);
     },
     render: function () {
         var self = this;
         var colorList = ["green", "blue", "red"];
-        var costsList = self.state.costsItems.map(function (item, index) {
+        var costsList = self.props.operatorItems.map(function (item, index) {
+            var liStyle = {
+                display: "block",
+                margin: "3px 0",
+                height: "45px",
+                lineHeight: "2em",
+                fontSize: "larger",
+                fontWeight: "600",
+                fontFamily: "宋体",
+                color: colorList[index % 3]
+            };
+            var clickEvent = null;
+            if(index === 0) {
+                clickEvent = self.changeInquireDivState;
+            } else if(index === 1) {
+                clickEvent = self.changeDeleteButtonState;
+            }
             return (
-                <li className={index === 0 ? "selected" : ""} onClick={self.changeInquireDivState} key={item} style={{
-                    display: "block",
-                    margin: "3px 0",
-                    height: "45px",
-                    lineHeight: "2em",
-                    fontSize: "larger",
-                    fontWeight: "600",
-                    fontFamily: "宋体",
-                    color: colorList[index % 3]
-                }}>{item}</li>
+                <li onClick={clickEvent} key={item} style={liStyle}>&nbsp;{item}</li>
             );
         });
         return (
@@ -65,63 +75,111 @@ var MyTextTd = React.createClass({
     }
 });
 
-var MyChoiceDateSelect = React.createClass({
+var MyTd = React.createClass({
     getInitialState: function () {
         return {
-            costsItems: ["天", "周", "月", "年"]
+            canEditText: false,
+            tdData: this.props.tdData
         };
     },
-    render: function () {
-        var costsList = this.state.costsItems.map(function (item) {
-            return (
-                <option key={item} value={item} style={{ fontWeight: "bolder" }}>{item}</option>
-            );
+    saveText: function (event) {
+        if(event.keyCode === 108 || event.keyCode === 13) {
+            this.setState({
+                canEditText: false,
+                tdData: this.refs.textbox.value
+            });
+        }
+    },
+    handleDblClickEvent: function () {
+        this.setState({
+            canEditText: true
         });
-        return (
-            <select style={{ width: this.props.selectWidth, height: this.props.selectHeight, marginLeft: "5px", fontWeight: "bolder" }}>
-                {costsList}
-            </select>
-        );
-    }
-});
-
-var MyChoiceDateTd = React.createClass({
+    },
     render: function () {
+        var tdData = this.state.tdData;
+        var tdChild = this.state.canEditText ? <input type="text" ref="textbox" defaultValue={tdData} /> : <span>{tdData}</span>;
+
         return (
-            <th>
-                <MyText textContent={this.props.tdContent} />
-                <MyChoiceDateSelect selectWidth="38px" selectHeight="20px" />
-            </th>
+            <td onDoubleClick={this.handleDblClickEvent} onKeyUp={this.saveText}>{tdChild}</td>
         );
     }
 });
 
 var MyTr = React.createClass({
+    getInitialState: function () {
+        return {
+            trData: this.props.userTrData,
+            showDeleteButton: this.props.deleteButtonState
+        };
+    },
+    componentWillReceiveProps: function (newProps) {
+        this.setState({
+            showDeleteButton: newProps.deleteButtonState
+        });
+    },
+    deleteTrData: function () {
+        this.state.trData.show = false;
+        this.setState({
+            trData: this.state.trData
+        });
+        this.props.tbodyCallBack(this.state.trData, this.props.userTrIndex);
+    },
     render: function () {
-        var tdList = this.props.userTdData.map(function(item) {
+        var tdList = this.state.trData.data.map(function(item) {
             return (
-                <td key={item}>{item}</td>
+                <MyTd key={item} tdData={item} />
             );
         });
+        var deleteButtonState = { display: this.state.showDeleteButton ? "block" : "none" };
         return (
             <tr>
                 {tdList}
+                <td>
+                    <input type="button" value="删除" onClick={this.deleteTrData} style={deleteButtonState} />
+                </td>
             </tr>
         );
     }
 });
 
 var MyTbody = React.createClass({
+    sortData: function (data) {
+        for(let i = 0; i < data.length; i++) {
+            for(let j = i + 1; j < data.length; j++) {
+                if(data[i][0] < data[j][0]) {
+                    let temp = data[j];
+                    data[j] = data[i];
+                    data[i] = temp;
+                }
+            }
+        }
+        return data.map(function(item) {
+            return {
+                data: item,
+                show: true
+            }
+        });
+    },
     getInitialState: function () {
+        var initData = this.sortData(UserCostsData.waterCostsData);
         return {
-            userData: []
+            userData: initData
         };
     },
+    updateUserData: function (trData, trIndex) {
+        this.state.userData[trIndex] = trData;
+        this.setState({
+            userData: this.state.userData
+        });
+    },
     render: function () {
-        var trList = this.state.userData.map(function(item, index) {
-            return (
-                <MyTr key={"MyTr" + index} userTdData={item} />
-            );
+        var self = this;
+        var trList = self.state.userData.map(function(item, index) {
+            if(item.show) {
+                return (
+                    <MyTr key={"MyTr" + index} userTrData={item} userTrIndex={index} deleteButtonState={self.props.deleteButtonState} tbodyCallBack={self.updateUserData} />
+                );
+            }
         });
         return (
             <tbody style={{ textAlign: "center" }}>
@@ -134,7 +192,6 @@ var MyTbody = React.createClass({
 var InquireInfoContent = React.createClass({
     render: function () {
         var tableStyle = {
-            tableLayout: "fixed",
             width: "100%",
             marginTop: "20px",
             border: "solid 2px lightgrey"
@@ -146,11 +203,11 @@ var InquireInfoContent = React.createClass({
                     <tr>
                         <MyTextTd tdContent="日期" />
                         <MyTextTd tdContent="剩余量" />
-                        <MyChoiceDateTd tdContent="使用量" />
+                        <MyTextTd tdContent="使用量" />
                         <MyTextTd tdContent="缴费金额（元）" />
                     </tr>
                 </thead>
-                <MyTbody />
+                <MyTbody deleteButtonState={this.props.deleteButtonState} />
             </table>
         );
     }
@@ -160,43 +217,59 @@ var InquireCenterPageContent = React.createClass({
     render: function () {
         return (
             <div>
-                <DivText textContent="xxx System" textSize="x-large" textMargin="60px" />
-                <div>
-                    <MyText textContent="户主：" textSize="large" textWeight="bold" />
-                    <MyText textContent="xxx" textSize="large" textWeight="lighter" />
-                </div>
-                <InquireInfoContent />
+                <DivText textContent="xxx 系统" textSize="x-large" textMargin="60px" />
+                <InquireInfoContent deleteButtonState={this.props.deleteButtonState} />
             </div>
         );
     }
 });
 
 var App = React.createClass({
-    componentDidMount: function () {
-        ReactDOM.render(
-            <InquireCenterPageContent />,
-            document.getElementById("centerDiv")
-        );
-        ReactDOM.render(
-            <InquireLeftPageContent />,
-            document.getElementById("leftDiv")
-        );
+    getInitialState: function () {
+        return {
+            showDeleteButton: false
+        };
+    },
+    changeDeleteButtonState: function (newState) {
+        this.setState({
+            showDeleteButton: newState
+        });
     },
     render: function () {
+        var operatorItems = ["插入", "删除", "..."];
+
         return (
             <div>
-                <PageFrame appHeight="800px" />
+                <div style={{height: "800px"}}>
+                    <div className="frame-div" style={{ width: "20%" }}>
+                        <InquireLeftPageContent operatorItems={operatorItems} deleteButtonCallback={this.changeDeleteButtonState} />
+                    </div>
+                    <div className="frame-div" style={{ width: "60%" }}>
+                        <InquireCenterPageContent deleteButtonState={this.state.showDeleteButton} />
+                    </div>
+                    <div className="frame-div" style={{ width: "20%" }}></div>
+                </div>
             </div>
         );
     }
 });
 
 
-var MyDateInput = React.createClass({
+var MyDateText = React.createClass({
+    getInitialState: function () {
+        return {
+            textValue: false
+        };
+    },
+    componentWillReceiveProps: function (newProps) {
+        this.setState({
+            textValue: newProps.textValue
+        });
+    },
     render: function () {
         return (
             <div>
-                <input type="date" placeholder={this.props.inputHintText} style={{ width: this.props.inputWidth, height: this.props.inputHeight}} />
+                <input type="text" disabled="true" value={this.state.textValue} style={{ width: this.props.inputWidth, height: this.props.inputHeight}} />
             </div>
         );
     }
@@ -217,6 +290,18 @@ var MyInquireDiv = React.createClass({
         this.setState({
             showInquireDiv: false
         });
+    },
+    formatNumber: function (num) {
+        if(num > 0 && num < 10) {
+            return "0" + num;
+        }
+        else {
+            return num;
+        }
+    },
+    getCurrentDate: function () {
+        var date = new Date();
+        return date.getFullYear() + "/" + this.formatNumber(date.getMonth()) + "/" + this.formatNumber(date.getDate());
     },
     render: function () {
         var showInquireDiv = this.state.showInquireDiv ? "block" : "none";
@@ -243,9 +328,8 @@ var MyInquireDiv = React.createClass({
         return (
             <div style={outerDivStyle}>
                 <div id="inquireItems" style={innerDivStyle}>
-                    <MyNumberInput inputWidth={inquireElementWidth} inputHeight={inquireElementHeight} inputHintText="请输入房号" />
-                    <MyDateInput inputWidth={inquireElementWidth} inputHeight={inquireElementHeight} inputHintText="请输入开始日期" />
-                    <MyDateInput inputWidth={inquireElementWidth} inputHeight={inquireElementHeight} inputHintText="请输入结束日期" />
+                    <MyDateText inputWidth={inquireElementWidth} inputHeight={inquireElementHeight} textValue={this.getCurrentDate()} />
+                    <MyNumberInput inputWidth={inquireElementWidth} inputHeight={inquireElementHeight} inputHintText="请输入金额" />
                     <div style={{ marginTop: "60px" }}>
                         <input type="button" value="确认" onClick={this.hideInquireDiv} style={{ width: btnWidth, height: "30px", marginLeft: inquireElementWidth + 4 - btnWidth }} />
                     </div>
