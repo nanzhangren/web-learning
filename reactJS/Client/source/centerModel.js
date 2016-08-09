@@ -10,16 +10,6 @@ var MyText = React.createClass({
     }
 });
 
-var DivText = React.createClass({
-    render: function () {
-        return (
-            <div style={{ textAlign: "center", margin: this.props.textMargin }}>
-                <MyText textWeight="bold" textContent={this.props.textContent} textSize={this.props.textSize} textMargin={this.props.textMargin} />
-            </div>
-        );
-    }
-});
-
 var MyTextTd = React.createClass({
     render: function () {
         return (
@@ -185,7 +175,9 @@ var InquireCenterPageContent = React.createClass({
     render: function () {
         return (
             <div>
-                <DivText textContent="xxx 系统" textSize="x-large" textMargin="60px" />
+                <div style={{ textAlign: "center", margin: this.props.textMargin }}>
+                    <MyText textWeight="bold" textContent="xxx 系统" textSize="x-large" textMargin="60px" />
+                </div>
                 <InquireInfoContent deleteButtonState={this.props.deleteButtonState} userData={this.state.userData} />
             </div>
         );
