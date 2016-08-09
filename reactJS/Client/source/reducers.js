@@ -1,0 +1,77 @@
+/**
+ * Created by ZeroZhang on 8/9/2016.
+ */
+
+import * as actionType from "./actions";
+import WaterCostsData from "./data";
+
+
+function sortData(data) {
+    for(let i = 0; i < data.length; i++) {
+        for(let j = i + 1; j < data.length; j++) {
+            if(data[i][0] < data[j][0]) {
+                let temp = data[j];
+                data[j] = data[i];
+                data[i] = temp;
+            }
+        }
+    }
+    return data.map(function(item) {
+        return {
+            data: item,
+            show: true
+        }
+    });
+}
+var initStateData = {
+    userData: sortData(WaterCostsData),
+    canDeleteItem: false,
+    canEditText: false,
+    showInquireDiv: false
+};
+
+export default function updateUserData(state=initStateData, action) {
+    var newDataArray = [for(i of state.userData) i];
+
+    switch (action.type) {
+        case actionType.ADD_DATA_ITEM:
+            var dataItem = action.dataItem;
+            var lastItem = state.userData[state.userData.length - 1];
+            var money = parseInt(dataItem.money);
+            var newUserDataItem = [dataItem.date, lastItem.data[1] + money * 0.38, lastItem.data[2], money];
+
+            newDataArray.unshift({data: newUserDataItem, show: true});
+
+            return Object.assign({}, state, {
+                userData: newDataArray
+            });
+        case actionType.REMOVE_DATA_ITEM:
+            newDataArray[action.itemIndex].show = false;
+
+            return Object.assign({}, state, {
+                userData: newDataArray
+            });
+        case actionType.UPDATE_DATA_CONTENT:
+            newDataArray.data[action.rowIndex][action.colIndex] = action.newData;
+            return Object.assign({}, state, {
+                userData: newDataArray
+            });
+        case actionType.CAN_DELETE_ITEM:
+            let canDelete = state.canDeleteItem;
+            return Object.assign({}, state, {
+                canDeleteItem: !canDelete
+            });
+        case actionType.CAN_EDIT_TEXT:
+            let canEdit = state.canEditText;
+            return Object.assign({}, state, {
+                canEditText: !canEdit
+            });
+        case actionType.IS_SHOW_INQUIRE_DIV:
+            let showDiv = state.showInquireDiv;
+            return Object.assign({}, state, {
+                showInquireDiv: !showDiv
+            });
+        default:
+            return state;
+    }
+}

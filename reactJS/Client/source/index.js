@@ -1,52 +1,17 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { Provider, connect } from "react-redux";
+import { createStore, bindActionCreators } from "redux";
 
 import InquireLeftPageContent from "./leftModel";
 import InquireCenterPageContent from "./centerModel";
-import WaterCostsData from "./data";
+import updateUserData from "./reducers";
+import * as appActions from "./actions";
 
+
+let store = createStore(updateUserData);
 
 var App = React.createClass({
-    sortData: function (data) {
-        for(let i = 0; i < data.length; i++) {
-            for(let j = i + 1; j < data.length; j++) {
-                if(data[i][0] < data[j][0]) {
-                    let temp = data[j];
-                    data[j] = data[i];
-                    data[i] = temp;
-                }
-            }
-        }
-        return data.map(function(item) {
-            return {
-                data: item,
-                show: true
-            }
-        });
-    },
-    getInitialState: function () {
-        var initData = this.sortData(WaterCostsData);
-        return {
-            showDeleteButton: false,
-            userData: initData
-        };
-    },
-    updataUserData: function (newItem) {
-        var lastItem = this.state.userData[this.state.userData.length - 1];
-        var money = parseInt(newItem.money);
-        var newUserDataItem = [newItem.date, lastItem.data[1] + money * 0.38, lastItem.data[2], money];
-
-        this.state.userData.unshift({data: newUserDataItem, show: true});
-
-        this.setState({
-            userData: this.state.userData
-        });
-    },
-    changeDeleteButtonState: function (newState) {
-        this.setState({
-            showDeleteButton: newState
-        });
-    },
     render: function () {
         var operatorItems = ["插入", "删除", "..."];
 
@@ -54,10 +19,10 @@ var App = React.createClass({
             <div>
                 <div style={{height: "800px"}}>
                     <div className="frame-div" style={{ width: "20%" }}>
-                        <InquireLeftPageContent operatorItems={operatorItems} deleteButtonCallback={this.changeDeleteButtonState} updateUserDataCallback={this.updataUserData} />
+                        <InquireLeftPageContent operatorItems={operatorItems} showInquireDiv={this.props.showInquireDiv} actions={this.props.actions} />
                     </div>
                     <div className="frame-div" style={{ width: "60%" }}>
-                        <InquireCenterPageContent deleteButtonState={this.state.showDeleteButton} userData={this.state.userData} />
+                        <InquireCenterPageContent canDeleteItem={this.props.canDeleteItem} userData={this.props.userData} actions={this.props.actions} />
                     </div>
                     <div className="frame-div" style={{ width: "20%" }}></div>
                 </div>
@@ -66,8 +31,31 @@ var App = React.createClass({
     }
 });
 
-
 ReactDOM.render(
-    <App />,
+    <Provider store={store}>
+        <App />
+    </Provider>,
     document.getElementById("sample")
 );
+
+
+function mapStateToProps(state) {
+    // return {
+    //     userData: state.userData,
+    //     canDeleteItem: state.canDeleteItem,
+    //     canEditText: state.canEditText,
+    //     showInquireDiv: state.showInquireDiv
+    // }
+
+    return Object.assign({}, state);
+}
+
+export default connect(mapStateToProps)(App);
+
+function mapDispatchToProps(dispatch) {
+    return {
+        actions: bindActionCreators(appActions, dispatch)
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

@@ -12,20 +12,10 @@ var MyNumberInput = React.createClass({
 });
 
 var MyDateText = React.createClass({
-    getInitialState: function () {
-        return {
-            textValue: false
-        };
-    },
-    componentWillReceiveProps: function (newProps) {
-        this.setState({
-            textValue: newProps.textValue
-        });
-    },
     render: function () {
         return (
             <div>
-                <input type="text" disabled="true" value={this.state.textValue} style={{ width: this.props.inputWidth, height: this.props.inputHeight}} />
+                <input type="text" disabled="true" value={this.props.textValue} style={{ width: this.props.inputWidth, height: this.props.inputHeight}} />
             </div>
         );
     }
@@ -41,17 +31,6 @@ var MyInquireDiv = React.createClass({
         this.setState({
             showInquireDiv: newProps.initialDivState
         });
-    },
-    hideInquireDiv: function () {
-        this.setState({
-            showInquireDiv: false
-        });
-        this.props.changeInquireDivStateCallback(false);
-
-        var dateInputElement = ReactDOM.findDOMNode(this.refs.dateInput).children[0];
-        var numberInputElement = ReactDOM.findDOMNode(this.refs.numberInput).children[0];
-        var dataItem = {date: dateInputElement.value, money: numberInputElement.value};
-        this.props.updateUserDataCallback(dataItem);
     },
     formatNumber: function (num) {
         if(num > 0 && num < 10) {
@@ -93,7 +72,7 @@ var MyInquireDiv = React.createClass({
                     <MyDateText ref="dateInput" inputWidth={inquireElementWidth} inputHeight={inquireElementHeight} textValue={this.getCurrentDate()} />
                     <MyNumberInput ref="numberInput" inputWidth={inquireElementWidth} inputHeight={inquireElementHeight} inputHintText="请输入金额" />
                     <div style={{ marginTop: "60px" }}>
-                        <input type="button" value="确认" onClick={this.hideInquireDiv} style={{ width: btnWidth, height: "30px", marginLeft: inquireElementWidth + 4 - btnWidth }} />
+                        <input type="button" value="确认" onClick={this.props.dispatch(this.props.actions.isShowInquireDiv())} style={{ width: btnWidth, height: "30px", marginLeft: inquireElementWidth + 4 - btnWidth }} />
                     </div>
                 </div>
             </div>
@@ -102,24 +81,6 @@ var MyInquireDiv = React.createClass({
 });
 
 var InquireLeftPageContent = React.createClass({
-    getInitialState: function () {
-        return {
-            showInquireDiv: false,
-            showDeleteButton: false
-        };
-    },
-    changeInquireDivState: function (newState) {
-        this.setState({
-            showInquireDiv: newState !== undefined ? newState : true
-        });
-    },
-    changeDeleteButtonState: function () {
-        var newState = true;
-        this.setState({
-            showDeleteButton: newState
-        });
-        this.props.deleteButtonCallback(newState);
-    },
     render: function () {
         var self = this;
         var colorList = ["green", "blue", "red"];
@@ -136,9 +97,9 @@ var InquireLeftPageContent = React.createClass({
             };
             var clickEvent = null;
             if(index === 0) {
-                clickEvent = self.changeInquireDivState;
+                clickEvent = self.props.dispatch(self.props.actions.isShowInquireDiv());
             } else if(index === 1) {
-                clickEvent = self.changeDeleteButtonState;
+                clickEvent = self.props.dispatch(self.props.actions.canDeleteItem());
             }
             return (
                 <li onClick={clickEvent} key={item} style={liStyle}>&nbsp;{item}</li>
@@ -146,7 +107,7 @@ var InquireLeftPageContent = React.createClass({
         });
         return (
             <div>
-                <MyInquireDiv initialDivState={self.state.showInquireDiv} changeInquireDivStateCallback={this.changeInquireDivState} updateUserDataCallback={this.props.updateUserDataCallback} />
+                <MyInquireDiv initialDivState={self.props.showInquireDiv} dispatch={self.props.dispatch} actions={self.props.actions} />
                 <ul ref="costsListUl" id="costsListUl" style={{ marginTop: "239px" }}>
                     {costsList}
                 </ul>
