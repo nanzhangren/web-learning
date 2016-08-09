@@ -1,7 +1,6 @@
 var config = {
     entry: {
-        inquire: './source/inquire.js',
-        data: ['./source/data.js']
+        inquire: './source/index.js'
     },
 
     externals: {
