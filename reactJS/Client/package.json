@@ -15,7 +15,6 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "webpack-dev-server --hot",
     "webpack": "webpack"
   },
   "author": "Zero Zhang",

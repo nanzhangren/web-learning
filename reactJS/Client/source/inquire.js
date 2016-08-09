@@ -1,15 +1,35 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-var MainPage = require("./index.js");
-var PageFrame = MainPage.PageFrame;
-var DivText = MainPage.DivText;
-var MyText = MainPage.MyText;
-
-var PayPage = require("./pay.js");
-var MyNumberInput = PayPage.MyNumberInput;
-
 var UserCostsData = require("./data.js");
+
+var DivText = React.createClass({
+    render: function () {
+        return (
+            <div style={{ textAlign: "center", margin: this.props.textMargin }}>
+                <MyText textWeight="bold" textContent={this.props.textContent} textSize={this.props.textSize} textMargin={this.props.textMargin} />
+            </div>
+        );
+    }
+});
+
+var MyText = React.createClass({
+    render: function () {
+        return (
+            <span style={{ fontSize: this.props.textSize, fontWeight: this.props.textWeight }}>{this.props.textContent}</span>
+        );
+    }
+});
+
+var MyNumberInput = React.createClass({
+    render: function () {
+        return (
+            <div>
+                <input type="number" min="0" placeholder={this.props.inputHintText} style={{ width: this.props.inputWidth, height: this.props.inputHeight}} />
+            </div>
+        );
+    }
+});
 
 var InquireLeftPageContent = React.createClass({
     getInitialState: function () {

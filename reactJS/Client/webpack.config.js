@@ -1,7 +1,5 @@
 var config = {
     entry: {
-        index: ['./source/index.js'],
-        pay: ['./source/pay.js'],
         inquire: './source/inquire.js',
         data: ['./source/data.js']
     },
@@ -22,7 +20,7 @@ var config = {
 
     module: {
         loaders: [ {
-            test: /\.jsx?$/,
+            test: /\.js?$/,
             exclude: /node_modules/,
             loader: 'babel',
 
