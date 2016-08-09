@@ -1,6 +1,6 @@
 var config = {
     entry: {
-        inquire: './source/index.js'
+        inquire: './source/react/index.js'
     },
 
     externals: {
