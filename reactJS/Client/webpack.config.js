@@ -1,6 +1,6 @@
 var config = {
     entry: {
-        inquire: './source/react/index.js'
+        inquire: './source/index.js'
     },
 
     externals: {
@@ -9,7 +9,8 @@ var config = {
 
     output: {
         path:'./output/',
-        filename: '[name].output.js'
+        filename: '[name].output.js',
+        devtoolModuleFilenameTemplate: '[absolute-resource-path]'
     },
 
     devServer: {
@@ -27,7 +28,8 @@ var config = {
                 presets: ['es2015', 'react']
             }
         }]
-    }
+    },
+    devtool: 'source-map'
 }
 
 module.exports = config;

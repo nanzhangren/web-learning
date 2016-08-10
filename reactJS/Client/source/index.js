@@ -1,12 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider, connect } from "react-redux";
-import { createStore, bindActionCreators } from "redux";
+import { createStore } from "redux";
 
 import InquireLeftPageContent from "./leftModel";
 import InquireCenterPageContent from "./centerModel";
 import updateUserData from "./reducers";
-import * as appActions from "./actions";
 
 
 let store = createStore(updateUserData);
@@ -19,10 +18,10 @@ var App = React.createClass({
             <div>
                 <div style={{height: "800px"}}>
                     <div className="frame-div" style={{ width: "20%" }}>
-                        <InquireLeftPageContent operatorItems={operatorItems} showInquireDiv={this.props.showInquireDiv} actions={this.props.actions} />
+                        <InquireLeftPageContent operatorItems={operatorItems} showInquireDiv={this.props.showInquireDiv} dispatch={this.props.dispatch} />
                     </div>
                     <div className="frame-div" style={{ width: "60%" }}>
-                        <InquireCenterPageContent canDeleteItem={this.props.canDeleteItem} userData={this.props.userData} actions={this.props.actions} />
+                        <InquireCenterPageContent canDeleteItem={this.props.canDeleteItem} canEditText={this.props.canEditText} userData={this.props.userData} dispatch={this.props.dispatch} />
                     </div>
                     <div className="frame-div" style={{ width: "20%" }}></div>
                 </div>
@@ -30,14 +29,6 @@ var App = React.createClass({
         );
     }
 });
-
-ReactDOM.render(
-    <Provider store={store}>
-        <App />
-    </Provider>,
-    document.getElementById("sample")
-);
-
 
 function mapStateToProps(state) {
     // return {
@@ -50,12 +41,12 @@ function mapStateToProps(state) {
     return Object.assign({}, state);
 }
 
-export default connect(mapStateToProps)(App);
+var AppWrapper = connect(mapStateToProps)(App);
 
-function mapDispatchToProps(dispatch) {
-    return {
-        actions: bindActionCreators(appActions, dispatch)
-    }
-}
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+ReactDOM.render(
+    <Provider store={store}>
+        <AppWrapper />
+    </Provider>,
+    document.getElementById("sample")
+);

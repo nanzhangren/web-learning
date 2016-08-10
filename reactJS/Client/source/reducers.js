@@ -31,7 +31,7 @@ var initStateData = {
 };
 
 export default function updateUserData(state=initStateData, action) {
-    var newDataArray = [for(i of state.userData) i];
+    var newDataArray = state.userData.concat();
 
     switch (action.type) {
         case actionType.ADD_DATA_ITEM:

@@ -1,5 +1,6 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import { connect } from "react-redux";
+import * as appActions from "./actions";
 
 var MyNumberInput = React.createClass({
     render: function () {
@@ -22,16 +23,6 @@ var MyDateText = React.createClass({
 });
 
 var MyInquireDiv = React.createClass({
-    getInitialState: function () {
-        return {
-            showInquireDiv: false
-        };
-    },
-    componentWillReceiveProps: function (newProps) {
-        this.setState({
-            showInquireDiv: newProps.initialDivState
-        });
-    },
     formatNumber: function (num) {
         if(num > 0 && num < 10) {
             return "0" + num;
@@ -45,7 +36,7 @@ var MyInquireDiv = React.createClass({
         return date.getFullYear() + "/" + this.formatNumber(date.getMonth() + 1) + "/" + this.formatNumber(date.getDate());
     },
     render: function () {
-        var showInquireDiv = this.state.showInquireDiv ? "block" : "none";
+        var showInquireDiv = this.props.initialDivState ? "block" : "none";
         var innerDivStyle = {
             position: "absolute",
             top: "25%",
@@ -72,7 +63,7 @@ var MyInquireDiv = React.createClass({
                     <MyDateText ref="dateInput" inputWidth={inquireElementWidth} inputHeight={inquireElementHeight} textValue={this.getCurrentDate()} />
                     <MyNumberInput ref="numberInput" inputWidth={inquireElementWidth} inputHeight={inquireElementHeight} inputHintText="请输入金额" />
                     <div style={{ marginTop: "60px" }}>
-                        <input type="button" value="确认" onClick={this.props.dispatch(this.props.actions.isShowInquireDiv())} style={{ width: btnWidth, height: "30px", marginLeft: inquireElementWidth + 4 - btnWidth }} />
+                        <input type="button" value="确认" onClick={() => this.props.dispatch(appActions.isShowInquireDiv())} style={{ width: btnWidth, height: "30px", marginLeft: inquireElementWidth + 4 - btnWidth }} />
                     </div>
                 </div>
             </div>
@@ -95,19 +86,19 @@ var InquireLeftPageContent = React.createClass({
                 fontFamily: "宋体",
                 color: colorList[index % 3]
             };
-            var clickEvent = null;
+            var clickAction = null;
             if(index === 0) {
-                clickEvent = self.props.dispatch(self.props.actions.isShowInquireDiv());
+                clickAction = appActions.isShowInquireDiv();
             } else if(index === 1) {
-                clickEvent = self.props.dispatch(self.props.actions.canDeleteItem());
+                clickAction = appActions.canDeleteItem();
             }
             return (
-                <li onClick={clickEvent} key={item} style={liStyle}>&nbsp;{item}</li>
+                <li onClick={() => self.props.dispatch(clickAction)} key={index} style={liStyle}>&nbsp;{item}</li>
             );
         });
         return (
             <div>
-                <MyInquireDiv initialDivState={self.props.showInquireDiv} dispatch={self.props.dispatch} actions={self.props.actions} />
+                <MyInquireDiv initialDivState={self.props.showInquireDiv} dispatch={self.props.dispatch} />
                 <ul ref="costsListUl" id="costsListUl" style={{ marginTop: "239px" }}>
                     {costsList}
                 </ul>
@@ -115,6 +106,5 @@ var InquireLeftPageContent = React.createClass({
         );
     }
 });
-
 
 export default InquireLeftPageContent

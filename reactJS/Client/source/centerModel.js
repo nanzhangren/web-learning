@@ -1,5 +1,6 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import { connect } from "react-redux";
+import * as appActions from "./actions";
 
 
 var MyText = React.createClass({
@@ -21,23 +22,10 @@ var MyTextTd = React.createClass({
 });
 
 var MyTd = React.createClass({
-    getInitialState: function () {
-        return {
-            canEditText: false,
-            tdData: this.props.tdData
-        };
-    },
-    componentWillReceiveProps: function (newProps) {
-        this.setState({
-            tdData: newProps.tdData
-        });
-    },
     saveText: function (event) {
         if(event.keyCode === 108 || event.keyCode === 13) {
-            this.setState({
-                canEditText: false,
-                tdData: this.refs.textbox.value
-            });
+            this.props.dispatch(appActions.updateDataContent(this.props.trIndex, this.props.tdIndex, this.refs.textbox.value));
+            this.props.dispatch(appActions.canEditText());
         }
     },
     handleDblClickEvent: function () {
@@ -46,47 +34,29 @@ var MyTd = React.createClass({
         });
     },
     render: function () {
-        var tdData = this.state.tdData;
-        var tdChild = this.state.canEditText ? <input type="text" ref="textbox" defaultValue={tdData} /> : <span>{tdData}</span>;
+        var tdData = this.props.tdData;
+        var tdChild = this.props.canEditText ? <input type="text" ref="textbox" defaultValue={tdData} /> : <span>{tdData}</span>;
 
         return (
-            <td onDoubleClick={this.handleDblClickEvent} onKeyUp={this.saveText}>{tdChild}</td>
+            <td onDoubleClick={() => this.props.dispatch(appActions.canEditText())} onKeyUp={this.saveText}>{tdChild}</td>
         );
     }
 });
 
 var MyTr = React.createClass({
-    getInitialState: function () {
-        return {
-            trData: this.props.userTrData,
-            showDeleteButton: this.props.deleteButtonState
-        };
-    },
-    componentWillReceiveProps: function (newProps) {
-        this.setState({
-            trData: newProps.userTrData,
-            showDeleteButton: newProps.deleteButtonState
-        });
-    },
-    deleteTrData: function () {
-        this.state.trData.show = false;
-        this.setState({
-            trData: this.state.trData
-        });
-        this.props.tbodyCallBack(this.state.trData, this.props.userTrIndex);
-    },
     render: function () {
-        var tdList = this.state.trData.data.map(function(item) {
+        var self = this;
+        var tdList = self.props.trData.data.map(function(item, tdIndex) {
             return (
-                <MyTd key={item} tdData={item} />
+                <MyTd key={item} tdData={item} trIndex={self.props.trIndex} tdIndex={tdIndex} canEditText={self.props.canEditText} dispatch={self.props.dispatch} />
             );
         });
-        var deleteButtonState = { display: this.state.showDeleteButton ? "block" : "none" };
+        var deleteButtonState = { display: self.props.canDeleteItem ? "block" : "none" };
         return (
             <tr>
                 {tdList}
                 <td>
-                    <input type="button" value="删除" onClick={this.deleteTrData} style={deleteButtonState} />
+                    <input type="button" value="删除" onClick={() => self.props.dispatch(appActions.canDeleteItem())} style={deleteButtonState} />
                 </td>
             </tr>
         );
@@ -94,28 +64,12 @@ var MyTr = React.createClass({
 });
 
 var MyTbody = React.createClass({
-    getInitialState: function () {
-        return {
-            userData: this.props.userData
-        };
-    },
-    componentWillReceiveProps: function (newProps) {
-        this.setState({
-            userData: newProps.userData
-        });
-    },
-    updateUserData: function (trData, trIndex) {
-        this.state.userData[trIndex] = trData;
-        this.setState({
-            userData: this.state.userData
-        });
-    },
     render: function () {
         var self = this;
-        var trList = self.state.userData.map(function(item, index) {
+        var trList = self.props.userData.map(function(item, index) {
             if(item.show) {
                 return (
-                    <MyTr key={"MyTr" + index} userTrData={item} userTrIndex={index} deleteButtonState={self.props.deleteButtonState} tbodyCallBack={self.updateUserData} />
+                    <MyTr key={"MyTr" + index} trData={item} trIndex={index} canDeleteItem={self.props.canDeleteItem} canEditText={self.props.canEditText} dispatch={self.props.dispatch} />
                 );
             }
         });
@@ -128,16 +82,6 @@ var MyTbody = React.createClass({
 });
 
 var InquireInfoContent = React.createClass({
-    getInitialState: function () {
-        return {
-            userData: this.props.userData
-        };
-    },
-    componentWillReceiveProps: function (newProps) {
-        this.setState({
-            userData: newProps.userData
-        });
-    },
     render: function () {
         var tableStyle = {
             width: "100%",
@@ -155,34 +99,23 @@ var InquireInfoContent = React.createClass({
                         <MyTextTd tdContent="缴费金额（元）" />
                     </tr>
                 </thead>
-                <MyTbody deleteButtonState={this.props.deleteButtonState} userData={this.state.userData} />
+                <MyTbody canDeleteItem={this.props.canDeleteItem} canEditText={this.props.canEditText} userData={this.props.userData} dispatch={this.props.dispatch} />
             </table>
         );
     }
 });
 
 var InquireCenterPageContent = React.createClass({
-    getInitialState: function () {
-        return {
-            userData: this.props.userData
-        };
-    },
-    componentWillReceiveProps: function (newProps) {
-        this.setState({
-            userData: newProps.userData
-        });
-    },
     render: function () {
         return (
             <div>
                 <div style={{ textAlign: "center", margin: this.props.textMargin }}>
                     <MyText textWeight="bold" textContent="xxx 系统" textSize="x-large" textMargin="60px" />
                 </div>
-                <InquireInfoContent deleteButtonState={this.props.deleteButtonState} userData={this.state.userData} />
+                <InquireInfoContent canDeleteItem={this.props.canDeleteItem} canEditText={this.props.canEditText} userData={this.props.userData} dispatch={this.props.dispatch} />
             </div>
         );
     }
 });
-
 
 export default InquireCenterPageContent
