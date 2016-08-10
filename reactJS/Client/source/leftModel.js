@@ -108,7 +108,7 @@ var InquireLeftPageContent = React.createClass({
         return (
             <div>
                 <MyInquireDiv initialDivState={self.props.showInquireDiv} dispatch={self.props.dispatch} />
-                <ul ref="costsListUl" id="costsListUl" style={{ marginTop: "239px" }}>
+                <ul ref="costsListUl" id="costsListUl" style={{ marginTop: "186px" }}>
                     {costsList}
                 </ul>
             </div>

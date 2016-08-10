@@ -88,24 +88,20 @@ var MyTbody = React.createClass({
 
 var InquireInfoContent = React.createClass({
     render: function () {
-        var tableStyle = {
-            width: "100%",
-            marginTop: "20px",
-            border: "solid 2px lightgrey"
-        };
-
         return (
-            <table id="dataTable" style={tableStyle}>
-                <thead>
-                    <tr>
-                        <MyTextTd tdContent="日期" />
-                        <MyTextTd tdContent="剩余量" />
-                        <MyTextTd tdContent="使用量" />
-                        <MyTextTd tdContent="缴费金额（元）" />
-                    </tr>
-                </thead>
-                <MyTbody activeRowIndex={this.props.activeRowIndex} activeColumnIndex={this.props.activeColumnIndex} canDeleteItem={this.props.canDeleteItem} canEditText={this.props.canEditText} userData={this.props.userData} dispatch={this.props.dispatch} />
-            </table>
+            <div style={{ height: "500px", overflow: "auto", marginTop: "20px" }}>
+                <table id="dataTable" style={{ width: "100%", border: "solid 2px lightgrey" }}>
+                    <thead>
+                        <tr>
+                            <MyTextTd tdContent="日期" />
+                            <MyTextTd tdContent="剩余量" />
+                            <MyTextTd tdContent="使用量" />
+                            <MyTextTd tdContent="缴费金额（元）" />
+                        </tr>
+                    </thead>
+                    <MyTbody activeRowIndex={this.props.activeRowIndex} activeColumnIndex={this.props.activeColumnIndex} canDeleteItem={this.props.canDeleteItem} canEditText={this.props.canEditText} userData={this.props.userData} dispatch={this.props.dispatch} />
+                </table>
+            </div>
         );
     }
 });
@@ -114,7 +110,7 @@ var InquireCenterPageContent = React.createClass({
     render: function () {
         return (
             <div>
-                <div style={{ textAlign: "center", margin: this.props.textMargin }}>
+                <div style={{ textAlign: "center", marginTop: "120px" }}>
                     <MyText textWeight="bold" textContent="xxx 系统" textSize="x-large" textMargin="60px" />
                 </div>
                 <InquireInfoContent activeRowIndex={this.props.activeRowIndex} activeColumnIndex={this.props.activeColumnIndex} canDeleteItem={this.props.canDeleteItem} canEditText={this.props.canEditText} userData={this.props.userData} dispatch={this.props.dispatch} />
