@@ -2,6 +2,7 @@
  * Created by ZeroZhang on 8/9/2016.
  */
 
+import { combineReducers } from 'redux';
 import undoable from "redux-undo";
 import * as actionType from "./actions";
 import WaterCostsData from "./data";
@@ -26,39 +27,42 @@ function sortData(data) {
 }
 var initStateData = {
     userData: sortData(WaterCostsData),
-    canDeleteItem: false,
-    canEditText: false,
-    showInquireDiv: false,
-    activeRowIndex: -1,
-    activeColumnIndex: -1
+    uiOptions: {
+        canDeleteItem: false,
+        canEditText: false,
+        showInquireDiv: false,
+        activeRowIndex: -1,
+        activeColumnIndex: -1
+    }
 };
 
-function updateUserData(state=initStateData, action) {
-    var newDataArray = state.userData.concat();
+function updateUserData(state = initStateData.userData, action) {
+    var newDataArray = [...state];
 
     switch (action.type) {
         case actionType.ADD_DATA_ITEM:
             var dataItem = action.dataItem;
-            var lastItem = state.userData[state.userData.length - 1];
+            var lastItem = state[state.length - 1];
             var money = parseInt(dataItem.money);
             var newUserDataItem = [dataItem.date, lastItem.data[1] + money * 0.38, lastItem.data[2], money];
 
-            newDataArray.unshift({data: newUserDataItem, show: true});
-
-            return Object.assign({}, state, {
-                userData: newDataArray
-            });
+            return [{data: newUserDataItem, show: true}, ...newDataArray];
         case actionType.REMOVE_DATA_ITEM:
-            newDataArray[action.itemIndex].show = false;
+            newDataArray[action.itemIndex] = Object.assign({}, newDataArray[action.itemIndex], {show: false});
 
-            return Object.assign({}, state, {
-                userData: newDataArray
-            });
+            return newDataArray;
         case actionType.UPDATE_DATA_CONTENT:
+
             newDataArray[action.rowIndex].data[action.colIndex] = action.newData;
-            return Object.assign({}, state, {
-                userData: newDataArray
-            });
+
+            return newDataArray;
+        default:
+            return state;
+    }
+}
+
+function updateUI(state = initStateData.uiOptions, action) {
+    switch (action.type) {
         case actionType.CAN_DELETE_ITEM:
             let canDelete = state.canDeleteItem;
             return Object.assign({}, state, {
@@ -87,4 +91,9 @@ function updateUserData(state=initStateData, action) {
     }
 }
 
-export default undoable(updateUserData);
+
+var appReducers = combineReducers({
+    userData: undoable(updateUserData),
+    uiOptions: updateUI
+});
+export default appReducers;
