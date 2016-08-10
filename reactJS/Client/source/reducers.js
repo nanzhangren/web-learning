@@ -27,7 +27,9 @@ var initStateData = {
     userData: sortData(WaterCostsData),
     canDeleteItem: false,
     canEditText: false,
-    showInquireDiv: false
+    showInquireDiv: false,
+    activeRowIndex: -1,
+    activeColumnIndex: -1
 };
 
 export default function updateUserData(state=initStateData, action) {
@@ -52,7 +54,7 @@ export default function updateUserData(state=initStateData, action) {
                 userData: newDataArray
             });
         case actionType.UPDATE_DATA_CONTENT:
-            newDataArray.data[action.rowIndex][action.colIndex] = action.newData;
+            newDataArray[action.rowIndex].data[action.colIndex] = action.newData;
             return Object.assign({}, state, {
                 userData: newDataArray
             });
@@ -70,6 +72,14 @@ export default function updateUserData(state=initStateData, action) {
             let showDiv = state.showInquireDiv;
             return Object.assign({}, state, {
                 showInquireDiv: !showDiv
+            });
+        case actionType.ACTIVE_ROW_INDEX:
+            return Object.assign({}, state, {
+                activeRowIndex: action.row
+            });
+        case actionType.ACTIVE_COLUMN_INDEX:
+            return Object.assign({}, state, {
+                activeColumnIndex: action.column
             });
         default:
             return state;

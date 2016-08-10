@@ -21,7 +21,7 @@ var App = React.createClass({
                         <InquireLeftPageContent operatorItems={operatorItems} showInquireDiv={this.props.showInquireDiv} dispatch={this.props.dispatch} />
                     </div>
                     <div className="frame-div" style={{ width: "60%" }}>
-                        <InquireCenterPageContent canDeleteItem={this.props.canDeleteItem} canEditText={this.props.canEditText} userData={this.props.userData} dispatch={this.props.dispatch} />
+                        <InquireCenterPageContent activeRowIndex={this.props.activeRowIndex} activeColumnIndex={this.props.activeColumnIndex} canDeleteItem={this.props.canDeleteItem} canEditText={this.props.canEditText} userData={this.props.userData} dispatch={this.props.dispatch} />
                     </div>
                     <div className="frame-div" style={{ width: "20%" }}></div>
                 </div>
@@ -31,14 +31,7 @@ var App = React.createClass({
 });
 
 function mapStateToProps(state) {
-    // return {
-    //     userData: state.userData,
-    //     canDeleteItem: state.canDeleteItem,
-    //     canEditText: state.canEditText,
-    //     showInquireDiv: state.showInquireDiv
-    // }
-
-    return Object.assign({}, state);
+    return state;
 }
 
 var AppWrapper = connect(mapStateToProps)(App);

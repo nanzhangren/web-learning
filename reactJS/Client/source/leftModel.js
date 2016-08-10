@@ -1,5 +1,5 @@
 import React from "react";
-import { connect } from "react-redux";
+import ReactDOM from "react-dom";
 import * as appActions from "./actions";
 
 var MyNumberInput = React.createClass({
@@ -35,6 +35,15 @@ var MyInquireDiv = React.createClass({
         var date = new Date();
         return date.getFullYear() + "/" + this.formatNumber(date.getMonth() + 1) + "/" + this.formatNumber(date.getDate());
     },
+    insertUserData: function () {
+        this.props.dispatch(appActions.isShowInquireDiv());
+
+        var dateInputElement = ReactDOM.findDOMNode(this.refs.dateInput).children[0];
+        var numberInputElement = ReactDOM.findDOMNode(this.refs.numberInput).children[0];
+        var dataItem = {date: dateInputElement.value, money: numberInputElement.value};
+
+        this.props.dispatch(appActions.addDataItem(dataItem));
+    },
     render: function () {
         var showInquireDiv = this.props.initialDivState ? "block" : "none";
         var innerDivStyle = {
@@ -63,7 +72,7 @@ var MyInquireDiv = React.createClass({
                     <MyDateText ref="dateInput" inputWidth={inquireElementWidth} inputHeight={inquireElementHeight} textValue={this.getCurrentDate()} />
                     <MyNumberInput ref="numberInput" inputWidth={inquireElementWidth} inputHeight={inquireElementHeight} inputHintText="请输入金额" />
                     <div style={{ marginTop: "60px" }}>
-                        <input type="button" value="确认" onClick={() => this.props.dispatch(appActions.isShowInquireDiv())} style={{ width: btnWidth, height: "30px", marginLeft: inquireElementWidth + 4 - btnWidth }} />
+                        <input type="button" value="确认" onClick={this.insertUserData} style={{ width: btnWidth, height: "30px", marginLeft: inquireElementWidth + 4 - btnWidth }} />
                     </div>
                 </div>
             </div>

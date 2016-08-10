@@ -1,5 +1,4 @@
 import React from "react";
-import { connect } from "react-redux";
 import * as appActions from "./actions";
 
 
@@ -28,17 +27,23 @@ var MyTd = React.createClass({
             this.props.dispatch(appActions.canEditText());
         }
     },
-    handleDblClickEvent: function () {
-        this.setState({
-            canEditText: true
-        });
+    editCell: function () {
+        this.props.dispatch(appActions.setActiveRowIndex(this.props.trIndex));
+        this.props.dispatch(appActions.setActiveColumnIndex(this.props.tdIndex));
+
+        this.props.dispatch(appActions.canEditText());
     },
     render: function () {
         var tdData = this.props.tdData;
-        var tdChild = this.props.canEditText ? <input type="text" ref="textbox" defaultValue={tdData} /> : <span>{tdData}</span>;
+        var tdChild;
+        if(this.props.canEditText && this.props.trIndex === this.props.activeRowIndex && this.props.tdIndex === this.props.activeColumnIndex) {
+            tdChild = <input type="text" ref="textbox" defaultValue={tdData} />;
+        } else {
+            tdChild = <span>{tdData}</span>;
+        }
 
         return (
-            <td onDoubleClick={() => this.props.dispatch(appActions.canEditText())} onKeyUp={this.saveText}>{tdChild}</td>
+            <td onDoubleClick={this.editCell} onKeyUp={this.saveText}>{tdChild}</td>
         );
     }
 });
@@ -48,7 +53,7 @@ var MyTr = React.createClass({
         var self = this;
         var tdList = self.props.trData.data.map(function(item, tdIndex) {
             return (
-                <MyTd key={item} tdData={item} trIndex={self.props.trIndex} tdIndex={tdIndex} canEditText={self.props.canEditText} dispatch={self.props.dispatch} />
+                <MyTd key={item} tdData={item} trIndex={self.props.trIndex} tdIndex={tdIndex} activeRowIndex={self.props.activeRowIndex} activeColumnIndex={self.props.activeColumnIndex} canEditText={self.props.canEditText} dispatch={self.props.dispatch} />
             );
         });
         var deleteButtonState = { display: self.props.canDeleteItem ? "block" : "none" };
@@ -56,7 +61,7 @@ var MyTr = React.createClass({
             <tr>
                 {tdList}
                 <td>
-                    <input type="button" value="删除" onClick={() => self.props.dispatch(appActions.canDeleteItem())} style={deleteButtonState} />
+                    <input type="button" value="删除" onClick={() => self.props.dispatch(appActions.removeDataItem(self.props.trIndex))} style={deleteButtonState} />
                 </td>
             </tr>
         );
@@ -69,7 +74,7 @@ var MyTbody = React.createClass({
         var trList = self.props.userData.map(function(item, index) {
             if(item.show) {
                 return (
-                    <MyTr key={"MyTr" + index} trData={item} trIndex={index} canDeleteItem={self.props.canDeleteItem} canEditText={self.props.canEditText} dispatch={self.props.dispatch} />
+                    <MyTr key={"MyTr" + index} trData={item} trIndex={index} activeRowIndex={self.props.activeRowIndex} activeColumnIndex={self.props.activeColumnIndex} canDeleteItem={self.props.canDeleteItem} canEditText={self.props.canEditText} dispatch={self.props.dispatch} />
                 );
             }
         });
@@ -99,7 +104,7 @@ var InquireInfoContent = React.createClass({
                         <MyTextTd tdContent="缴费金额（元）" />
                     </tr>
                 </thead>
-                <MyTbody canDeleteItem={this.props.canDeleteItem} canEditText={this.props.canEditText} userData={this.props.userData} dispatch={this.props.dispatch} />
+                <MyTbody activeRowIndex={this.props.activeRowIndex} activeColumnIndex={this.props.activeColumnIndex} canDeleteItem={this.props.canDeleteItem} canEditText={this.props.canEditText} userData={this.props.userData} dispatch={this.props.dispatch} />
             </table>
         );
     }
@@ -112,7 +117,7 @@ var InquireCenterPageContent = React.createClass({
                 <div style={{ textAlign: "center", margin: this.props.textMargin }}>
                     <MyText textWeight="bold" textContent="xxx 系统" textSize="x-large" textMargin="60px" />
                 </div>
-                <InquireInfoContent canDeleteItem={this.props.canDeleteItem} canEditText={this.props.canEditText} userData={this.props.userData} dispatch={this.props.dispatch} />
+                <InquireInfoContent activeRowIndex={this.props.activeRowIndex} activeColumnIndex={this.props.activeColumnIndex} canDeleteItem={this.props.canDeleteItem} canEditText={this.props.canEditText} userData={this.props.userData} dispatch={this.props.dispatch} />
             </div>
         );
     }
