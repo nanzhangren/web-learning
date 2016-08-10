@@ -2,6 +2,7 @@
  * Created by ZeroZhang on 8/9/2016.
  */
 
+import undoable from "redux-undo";
 import * as actionType from "./actions";
 import WaterCostsData from "./data";
 
@@ -32,7 +33,7 @@ var initStateData = {
     activeColumnIndex: -1
 };
 
-export default function updateUserData(state=initStateData, action) {
+function updateUserData(state=initStateData, action) {
     var newDataArray = state.userData.concat();
 
     switch (action.type) {
@@ -85,3 +86,5 @@ export default function updateUserData(state=initStateData, action) {
             return state;
     }
 }
+
+export default undoable(updateUserData);

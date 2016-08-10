@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { ActionCreators } from "redux-undo";
 import * as appActions from "./actions";
 
 var MyNumberInput = React.createClass({
@@ -100,6 +101,10 @@ var InquireLeftPageContent = React.createClass({
                 clickAction = appActions.isShowInquireDiv();
             } else if(index === 1) {
                 clickAction = appActions.canDeleteItem();
+            } else if(index === 2) {
+                clickAction = ActionCreators.undo();
+            } else if(index === 3) {
+                clickAction = ActionCreators.redo();
             }
             return (
                 <li onClick={() => self.props.dispatch(clickAction)} key={index} style={liStyle}>&nbsp;{item}</li>

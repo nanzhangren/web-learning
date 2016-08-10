@@ -10,6 +10,7 @@ npm install react
 npm install react-dom
 npm install react-redux
 npm install redux
+npm install redux-undo
 npm install babel-core
 npm install babel-loader
 npm install babel-preset-react
