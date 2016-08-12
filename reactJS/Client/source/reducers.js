@@ -45,17 +45,18 @@ function updateUserData(state = initStateData.userData, action) {
             var lastItem = state[state.length - 1];
             var money = parseInt(dataItem.money);
             var newUserDataItem = [dataItem.date, lastItem.data[1] + money * 0.38, lastItem.data[2], money];
-
             return [{data: newUserDataItem, show: true}, ...newDataArray];
+
         case actionType.REMOVE_DATA_ITEM:
             newDataArray[action.itemIndex] = Object.assign({}, newDataArray[action.itemIndex], {show: false});
-
             return newDataArray;
+
         case actionType.UPDATE_DATA_CONTENT:
-
+            newDataArray[action.rowIndex] = Object.assign({}, state[action.rowIndex]);
+            newDataArray[action.rowIndex].data = [...state[action.rowIndex].data];
             newDataArray[action.rowIndex].data[action.colIndex] = action.newData;
-
             return newDataArray;
+
         default:
             return state;
     }

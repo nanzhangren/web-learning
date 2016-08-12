@@ -51,9 +51,10 @@ var MyTd = React.createClass({
 var MyTr = React.createClass({
     render: function () {
         var self = this;
+        var trIndex = self.props.trIndex;
         var tdList = self.props.trData.data.map(function(item, tdIndex) {
             return (
-                <MyTd key={item} tdData={item} trIndex={self.props.trIndex} tdIndex={tdIndex} activeRowIndex={self.props.activeRowIndex} activeColumnIndex={self.props.activeColumnIndex} canEditText={self.props.canEditText} dispatch={self.props.dispatch} />
+                <MyTd key={"MyTd" + trIndex + tdIndex} tdData={item} trIndex={trIndex} tdIndex={tdIndex} activeRowIndex={self.props.activeRowIndex} activeColumnIndex={self.props.activeColumnIndex} canEditText={self.props.canEditText} dispatch={self.props.dispatch} />
             );
         });
         var deleteButtonState = { display: self.props.canDeleteItem ? "block" : "none" };
