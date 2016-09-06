@@ -1,0 +1,36 @@
+<!DOCTYPE>
+<html>
+<head>
+    <title>Test page</title>
+    <style>
+        .imeMode-div {
+            width: 200px;
+            height: 30px;
+            margin-bottom: 10px;
+            border: 1px solid black;
+            background-color: lightblue;
+            color: white;
+        }
+        .control {
+            width: 200px;
+            height: 30px;
+        }
+    </style>
+    <script>
+        window.onload = function () {
+        }
+
+        function moveCursor() {
+            var editor = document.getElementById('editor');
+            editor.focus();
+            var range = window.getSelection();
+            range.selectAllChildren(editor);
+            range.collapseToEnd();
+        }
+    </script>
+</head>
+<body>
+    <div id="editor" contenteditable="true" class="imeMode-div">hello, world</div>
+    <input type="button" class="control" value="Click" onclick="moveCursor()" />
+</body>
+</html>

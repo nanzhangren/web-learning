@@ -1,0 +1,38 @@
+<!DOCTYPE>
+<html>
+<head>
+    <title>Test page</title>
+    <style>
+        #test {
+            position: absolute;
+            display: none;
+            width: 100%;
+            height: 20px;
+            left: 0;
+            text-align: center;
+        }
+    </style>
+    <script>
+        window.onload = function () {
+        }
+
+        function clickEvent() {
+            var ele = document.getElementById('test');
+            ele.style.display = "block";
+            var num = 20;
+            var timer = setInterval(function () {
+                ele.style.top = num + "px";
+                num--;
+                if (num < 0) {
+                    clearInterval(timer);
+                    ele.style.top = "0px";
+                }
+            }, 20);
+        }
+    </script>
+</head>
+<body>
+<span id="test">Zero</span>
+<input type="button" style="width: 80px; height: 30px;" value="click" onclick="clickEvent()"/>
+</body>
+</html>
