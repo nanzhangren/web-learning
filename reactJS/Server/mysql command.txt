@@ -1,0 +1,27 @@
+use userinfo;
+create table user_table(
+	homeNumber char(8) not null primary key,
+	name varchar(20) not null,
+	sex char(1) not null,
+	birth date,
+	personNumber int
+)
+
+insert into userinfo.user_table values("01010701", "张三丰", "男", "1956/05/03", "6");
+insert into userinfo.user_table values("01010702", "李伟", "男", "1963/01/12", "4");
+insert into userinfo.user_table values("01010703", "王东方", "男", "1945/12/16", "3");
+insert into userinfo.user_table values("01010801", "甄嘉定", "男", "1923/11/20", "7");
+insert into userinfo.user_table values("01010802", "普向东", "男", "1954/05/09", "5");
+insert into userinfo.user_table values("01010803", "董香", "女", "1921/08/17", "3");
+insert into userinfo.user_table values("01010901", "欧阳行", "男", "1912/10/10", "4");
+insert into userinfo.user_table values("01010902", "孟翼虎", "男", "1968/06/19", "5");
+insert into userinfo.user_table values("01010903", "姚红", "女", "1951/12/01", "3");
+
+create table userinfo.water_costs(
+	homeNumber char(8) not null primary key,
+	payDate date,
+	payMoney float,
+	payNumber float,
+	foreign key(homeNumber) references user_table(homeNumber)
+)
+insert into userinfo.water_costs values("01010701", "2016/01/05", 200, 760);

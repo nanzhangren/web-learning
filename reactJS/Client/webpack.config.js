@@ -1,8 +1,6 @@
 var config = {
     entry: {
-        main: ['./source/main.js'],
-        pay: './source/pay.js',
-        inquire: './source/inquire.js'
+        inquire: './source/index.js'
     },
 
     externals: {
@@ -11,7 +9,8 @@ var config = {
 
     output: {
         path:'./output/',
-        filename: '[name].output.js'
+        filename: '[name].output.js',
+        devtoolModuleFilenameTemplate: '[absolute-resource-path]'
     },
 
     devServer: {
@@ -21,7 +20,7 @@ var config = {
 
     module: {
         loaders: [ {
-            test: /\.jsx?$/,
+            test: /\.js?$/,
             exclude: /node_modules/,
             loader: 'babel',
 
@@ -29,7 +28,8 @@ var config = {
                 presets: ['es2015', 'react']
             }
         }]
-    }
+    },
+    devtool: 'source-map'
 }
 
 module.exports = config;

@@ -5,14 +5,17 @@
   "main": "index.js",
   "dependencies": {
     "babel": "^6.5.2",
+    "mysql": "^2.11.1",
     "react": "^15.2.1",
     "react-dom": "^15.2.1",
+    "react-redux": "^4.4.5",
+    "redux": "^3.5.2",
+    "redux-undo": "^0.6.1",
     "webpack": "^1.13.1",
     "webpack-dev-server": "^1.14.1"
   },
   "devDependencies": {},
   "scripts": {
-    "start": "webpack-dev-server --hot",
     "webpack": "webpack"
   },
   "author": "Zero Zhang",
