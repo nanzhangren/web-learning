@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>div contenteditable光标测试</title>
+    <style type="text/css">
+        .div {
+            width: 600px;
+            height: 200px;
+            border: 1px solid #CCC
+        }
+    </style>
+    <script type="text/javascript" src="jquery-1.8.3.min.js"></script>
+    <script type="text/javascript">
+        function insertHtmlAtCaret(html) {
+            var sel, range;
+            if (window.getSelection) {
+// IE9 and non-IE
+                sel = window.getSelection();
+                if (sel.getRangeAt && sel.rangeCount) {
+                    range = sel.getRangeAt(0);
+                    range.deleteContents();
+// Range.createContextualFragment() would be useful here but is
+// non-standard and not supported in all browsers (IE9, for one)
+                    var el = document.createElement("div");
+                    el.innerHTML = html;
+                    var frag = document.createDocumentFragment(), node, lastNode;
+                    while ((node = el.firstChild)) {
+                        lastNode = frag.appendChild(node);
+                    }
+                    range.insertNode(frag);
+// Preserve the selection
+                    if (lastNode) {
+                        range = range.cloneRange();
+                        range.setStartAfter(lastNode);
+                        range.collapse(true);
+                        sel.removeAllRanges();
+                        sel.addRange(range);
+                    }
+                }
+            } else if (document.selection && document.selection.type != "Control") {
+// IE < 9
+                document.selection.createRange().pasteHTML(html);
+            }
+        }
+
+        function getRangeParts(range) {
+            if (!range) {
+                return null;
+            }
+            for (var i = 0; i < range.length; i++) {
+                if (range[i] >= '0' && range[i] <= '9') {
+                    return {left: range.substring(0, i), right: range.substring(i, range.length)};
+                }
+            }
+            return null;
+        }
+        function isContinuousColumn(leftRangeString, rightRangeString) {
+            var leftRangeParts = getRangeParts(leftRangeString), rightRangeParts = getRangeParts(rightRangeString);
+            if (leftRangeParts && rightRangeParts &&
+                    rightRangeParts.left.charCodeAt() - leftRangeParts.left.charCodeAt() === 1 &&
+                    rightRangeParts.right === leftRangeParts.right) {
+                return true;
+            }
+            return false;
+        }
+        function isContinuousRow(aboveRangeString, belowRangeString) {
+            var aboveRangeParts = getRangeParts(aboveRangeString), belowRangeParts = getRangeParts(belowRangeString);
+            if (aboveRangeParts && belowRangeParts &&
+                    belowRangeParts.left === aboveRangeParts.left &&
+                    belowRangeParts.right.charCodeAt() - aboveRangeParts.right.charCodeAt() === 1) {
+                return true;
+            }
+            return false;
+        }
+        function isContinuousRange(aboveRangeArray, belowRangeArray) {
+            var aboveRangeArrayLength = aboveRangeArray.length;
+            if (aboveRangeArrayLength === belowRangeArray.length) {
+                if (aboveRangeArrayLength === 1) {
+                    return isContinuousRow(aboveRangeArray[0], belowRangeArray[0]);
+                } else if (aboveRangeArrayLength === 2) {
+                    return isContinuousRow(aboveRangeArray[0], belowRangeArray[0]) &&
+                            isContinuousRow(aboveRangeArray[1], belowRangeArray[1]);
+                }
+            }
+        }
+        function mergeColumn(ranges) {
+            var result = '';
+            for (var i = 0; i < ranges.length; i++) {
+                var currentRange = ranges[i], rightRange = ranges[i + 1];
+                var pos = currentRange.indexOf(':'), compareRange = currentRange;
+                if (pos > 0) {
+                    compareRange = currentRange.substring(pos + 1, currentRange.length);
+                }
+                if (isContinuousColumn(compareRange, rightRange)) {
+                    if (pos > 0) {
+                        ranges[i + 1] = currentRange.substring(0, pos) + ':' + rightRange;
+                    } else {
+                        ranges[i + 1] = currentRange + ':' + rightRange;
+                    }
+                } else {
+                    result += currentRange + ' ';
+                }
+            }
+            return result.substr(0, result.length - 1);
+        }
+        function mergeRow(ranges) {
+            var result = '';
+            for (var i = 0; i < ranges.length - 1; i++) {
+                for (var j = i + 1; j < ranges.length; j++) {
+                    var aboveRangeArray = ranges[i].split(':'), belowRangeArray = ranges[j].split(':');
+                    var compareRange;
+                    if (belowRangeArray.length > 1) {
+                        compareRange = getRangeParts(aboveRangeArray[1]).left + getRangeParts(aboveRangeArray[0]).right +
+                                ':' + aboveRangeArray[1];
+                    } else {
+                        compareRange = [aboveRangeArray[1] || aboveRangeArray[0]]
+                    }
+                    if (isContinuousRange(compareRange, belowRangeArray)) {
+                        ranges[j] = aboveRangeArray.length > 1 ? aboveRangeArray[0] + ':' + (belowRangeArray[1] || belowRangeArray[0]):
+                        aboveRangeArray[0] + ':' + belowRangeArray[0];
+                        break;
+                    } else {
+                        result += ranges[i] + ' ';
+                    }
+                }
+            }
+            return result.substr(0, result.length - 1);
+        }
+        function mergeRange(rangesString) {
+            var ranges = rangesString.split(' ');
+            rangesString = mergeColumn(ranges);
+            ranges = rangesString.split(' ');
+            return mergeRow(ranges);
+        }
+
+        var rowString = 'A1 A2 A3 B1 B6 B7 B8';
+        // var colString = 'B1 C1 D1 G1 H1 J1';
+        // var rowColString = 'A10 B10 C10 D10 G1 G2 G3 J3 J4';
+        // var rangeString = 'A1 A2 A3 B1 B2 B3 C1 C2 C3 D5 D6 E5 E6';
+        console.log(mergeRange(rowString));
+        // console.log(mergeRange(colString));
+        // console.log(mergeRange(rowColString));
+        // console.log(mergeRange(rangeString));
+    </script>
+</head>
+
+<body>
+<button type="button" onclick="document.getElementById('test').focus(); insertHtmlAtCaret('<b>INSERTED</b>');">插入字符
+</button>
+<div contentEditable="true" style="height:50px; border:2px solid red;" id="test"></div>
+</body>
+</html>

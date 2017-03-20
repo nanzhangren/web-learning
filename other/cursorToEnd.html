@@ -1,0 +1,53 @@
+<!DOCTYPE>
+<html>
+<head>
+    <title>Test page</title>
+    <style>
+        .imeMode-div {
+            width: 200px;
+            height: 30px;
+            margin-bottom: 10px;
+            border: 1px solid black;
+            background-color: lightblue;
+            color: white;
+        }
+        .control {
+            width: 200px;
+            height: 30px;
+        }
+    </style>
+    <script>
+        window.onload = function () {
+        }
+
+        function moveCursor() {
+            var editor = document.getElementById('editor');
+            editor.setAttribute('contenteditable', true);
+            editor.focus();
+            var selection = window.getSelection();
+            var range = document.createRange();
+            range.setStart(editor.firstChild, 3);
+            range.collapse(true);
+            selection.removeAllRanges();
+            selection.addRange(range);
+
+            getCursorPosition();
+        }
+
+        function getCursorPosition() {
+            var selection = window.getSelection();
+            var range = selection.getRangeAt(0);
+            console.log('startPos:' + range.startOffset + ', endPos: ' + range.endOffset);
+        }
+
+        function test() {
+            var editor = document.getElementById('editor');
+            editor.setAttribute('contenteditable', false);
+            return false;
+        }
+    </script>
+</head>
+<body>
+    <div id="editor" onblur="test()" ondblclick="moveCursor()">hello, world</div>
+</body>
+</html>

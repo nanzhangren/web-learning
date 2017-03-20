@@ -1,0 +1,35 @@
+<!DOCTYPE>
+<html>
+<head>
+    <title>Test page</title>
+    <style>
+        .imeMode-div {
+            width: 200px;
+            height: 30px;
+            margin-bottom: 10px;
+            border: 1px solid black;
+            background-color: lightblue;
+            color: white;
+        }
+        .imeMode-textarea {
+            width: 200px;
+            height: 30px;
+        }
+    </style>
+    <script>
+        window.onload = function () {
+        }
+    </script>
+</head>
+<body>
+    <div contenteditable="true" class="imeMode-div" style="ime-mode: auto">auto</div>
+    <div contenteditable="true" class="imeMode-div" style="ime-mode: active">active</div>
+    <div contenteditable="true" class="imeMode-div" style="ime-mode: inactive">inactive</div>
+    <div contenteditable="true" class="imeMode-div" style="ime-mode: disabled">disabled</div>
+
+    <textarea class="imeMode-textarea" style="ime-mode: auto">auto</textarea>
+    <textarea class="imeMode-textarea" style="ime-mode: active">active</textarea>
+    <textarea class="imeMode-textarea" style="ime-mode: inactive">inactive</textarea>
+    <textarea class="imeMode-textarea" style="ime-mode: disabled">disabled</textarea>
+</body>
+</html>
