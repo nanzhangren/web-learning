@@ -1,0 +1,17 @@
+{
+  "name": "bs-test-project",
+  "version": "1.0.0",
+  "description": "This is just a sample for testing browser sync.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "BrowserSync"
+  ],
+  "author": "Zero Zhang",
+  "license": "MIT",
+  "dependencies": {
+    "browser-sync": "^2.18.8"
+  }
+}
