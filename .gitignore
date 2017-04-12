@@ -1,3 +1,8 @@
 *.idea*
 *node_modules*
 reactJS/Client/output/*
+
+angular2/src/*/*.js
+angular2/src/*/*.js.map
+angular2/src/*.js
+angular2/src/*.js.map
